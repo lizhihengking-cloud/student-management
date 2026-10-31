@@ -1,0 +1,5 @@
+.tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+.tab { background: none; border: none; border-bottom: 3px solid transparent; padding: 0.6rem 1rem; cursor: pointer; font-size: 0.95rem; color: var(--muted); }
+.tab.active { color: var(--primary); border-color: var(--primary); font-weight: 600; }
+.tab:disabled { opacity: 0.5; cursor: not-allowed; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f08c00; margin-left: 4px; }

@@ -1,0 +1,43 @@
+<div class="page-header">
+  <h1>Students</h1>
+  <a routerLink="/students/new" class="btn primary">+ New student</a>
+</div>
+
+<div class="card">
+  <input class="search" type="search" placeholder="Search by name or email…" [formControl]="search" aria-label="Search students" />
+
+  @if (loading) {
+    <p class="muted">Loading…</p>
+  } @else if (loadFailed) {
+    <div class="empty">
+      <p>Could not load students.</p>
+      <button class="btn" (click)="reload()">Retry</button>
+    </div>
+  } @else {
+    @if (vm$ | async; as students) {
+      @if (students.length === 0) {
+        <p class="empty">No students found.</p>
+      } @else {
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Courses</th><th class="right">Actions</th></tr></thead>
+          <tbody>
+            @for (s of students; track s.id) {
+              <tr>
+                <td><a [routerLink]="['/students', s.id]">{{ s.lastName }}, {{ s.firstName }}</a></td>
+                <td>{{ s.email }}</td>
+                <td>
+                  @for (c of s.courses; track c.id) { <span class="badge" [title]="c.title">{{ c.code }}</span> }
+                  @if (s.courses.length === 0) { <span class="muted">—</span> }
+                </td>
+                <td class="right">
+                  <a class="btn small" [routerLink]="['/students', s.id]">Edit</a>
+                  <button class="btn small danger" (click)="remove(s)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    }
+  }
+</div>

@@ -1,0 +1,30 @@
+<div class="page-header">
+  <h1>{{ id ? 'Edit course' : 'New course' }}</h1>
+  <a routerLink="/courses" class="btn">← Back to courses</a>
+</div>
+<div class="card">
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="grid">
+      <label>Code *
+        <input formControlName="code" autocomplete="off" />
+        <small class="error">{{ err('code', 'Code') }}</small>
+      </label>
+      <label>Credits *
+        <input type="number" formControlName="credits" />
+        <small class="error">{{ err('credits', 'Credits') }}</small>
+      </label>
+      <label class="span-2">Title *
+        <input formControlName="title" autocomplete="off" />
+        <small class="error">{{ err('title', 'Title') }}</small>
+      </label>
+      <label class="span-2">Description
+        <textarea rows="3" formControlName="description"></textarea>
+        <small class="error">{{ err('description', 'Description') }}</small>
+      </label>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn primary" [disabled]="saving">{{ saving ? 'Saving…' : 'Save' }}</button>
+      <a routerLink="/courses" class="btn">Cancel</a>
+    </div>
+  </form>
+</div>

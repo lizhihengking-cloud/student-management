@@ -1,0 +1,30 @@
+<header class="navbar">
+  <span class="brand">🎓 Student Management</span>
+  @if (auth.user$ | async; as user) {
+    <nav>
+      @if (user.role === 'ADMIN') {
+        <a routerLink="/students" routerLinkActive="active">Students</a>
+        <a routerLink="/courses" routerLinkActive="active">Courses</a>
+      } @else {
+        <a routerLink="/my-courses" routerLinkActive="active">My courses</a>
+        @if (user.studentId) {
+          <a [routerLink]="['/students', user.studentId]" routerLinkActive="active">My profile</a>
+        }
+      }
+    </nav>
+    <div class="session">
+      <span class="who" [title]="user.username">{{ user.username }}</span>
+      <span class="role" [class.admin]="user.role === 'ADMIN'">{{ user.role === 'ADMIN' ? 'Admin' : 'Student' }}</span>
+      <button type="button" class="logout" (click)="logout()">Sign out</button>
+    </div>
+  } @else {
+    <nav class="spacer"></nav>
+    <div class="session">
+      <a routerLink="/login" routerLinkActive="active">Sign in</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+    </div>
+  }
+</header>
+<main class="container"><router-outlet /></main>
+<app-toast />
+<app-confirm-modal />

@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h1>Courses</h1>
+  <a routerLink="/courses/new" class="btn primary">+ New course</a>
+</div>
+
+<div class="card">
+  @if (loading) {
+    <p class="muted">Loading…</p>
+  } @else if (loadFailed) {
+    <div class="empty"><p>Could not load courses.</p><button class="btn" (click)="reload()">Retry</button></div>
+  } @else {
+   @if (courses.courses$ | async; as list) {
+    @if (list.length === 0) {
+      <p class="empty">No courses yet.</p>
+    } @else {
+      <table>
+        <thead><tr><th>Code</th><th>Title</th><th>Credits</th><th class="right">Actions</th></tr></thead>
+        <tbody>
+          @for (c of list; track c.id) {
+            <tr>
+              <td><strong>{{ c.code }}</strong></td>
+              <td>{{ c.title }} @if (c.description) { <div class="muted small-text">{{ c.description }}</div> }</td>
+              <td>{{ c.credits }}</td>
+              <td class="right">
+                <a class="btn small" [routerLink]="['/courses', c.id, 'edit']">Edit</a>
+                <button class="btn small danger" (click)="remove(c)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+   }
+  }
+</div>

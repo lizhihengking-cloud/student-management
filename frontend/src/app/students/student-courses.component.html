@@ -1,0 +1,18 @@
+@if (allCourses.length === 0) {
+  <p class="empty">No courses exist yet. <a routerLink="/courses/new">Create a course</a> first.</p>
+} @else {
+  <ul class="checklist">
+    @for (c of allCourses; track c.id) {
+      <li>
+        <label>
+          <input type="checkbox" [checked]="selected.has(c.id)" (change)="toggle(c.id)" />
+          <strong>{{ c.code }}</strong> — {{ c.title }} <span class="muted">({{ c.credits }} credits)</span>
+        </label>
+      </li>
+    }
+  </ul>
+  <div class="actions">
+    <button type="button" class="btn primary" [disabled]="!dirty || saving" (click)="save()">{{ saving ? 'Saving…' : 'Save enrollment' }}</button>
+    <button type="button" class="btn" [disabled]="!dirty" (click)="reset()">Reset</button>
+  </div>
+}

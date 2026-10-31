@@ -1,0 +1,24 @@
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <div class="grid">
+    <label>First name *
+      <input formControlName="firstName" autocomplete="off" />
+      <small class="error">{{ err('firstName', 'First name') }}</small>
+    </label>
+    <label>Last name *
+      <input formControlName="lastName" autocomplete="off" />
+      <small class="error">{{ err('lastName', 'Last name') }}</small>
+    </label>
+    <label>Email *
+      <input type="email" formControlName="email" autocomplete="off" />
+      <small class="error">{{ err('email', 'Email') }}</small>
+    </label>
+    <label>Date of birth
+      <input type="date" formControlName="dateOfBirth" />
+      <small class="error">{{ err('dateOfBirth', 'Date of birth') }}</small>
+    </label>
+  </div>
+  <div class="actions">
+    <button type="submit" class="btn primary" [disabled]="saving">{{ saving ? 'Saving…' : student ? 'Save changes' : 'Create student' }}</button>
+    <button type="button" class="btn" (click)="reset()" [disabled]="!form.dirty">Reset</button>
+  </div>
+</form>

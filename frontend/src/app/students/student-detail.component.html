@@ -1,0 +1,29 @@
+<div class="page-header">
+  <h1>{{ student ? student.firstName + ' ' + student.lastName : 'New student' }}</h1>
+  @if (auth.isAdmin) {
+    <a routerLink="/students" class="btn">← Back to students</a>
+  } @else {
+    <a routerLink="/my-courses" class="btn">← Back to my courses</a>
+  }
+</div>
+
+<div class="card">
+  <div class="tabs" role="tablist">
+    <button role="tab" class="tab" [class.active]="tab === 'profile'" [attr.aria-selected]="tab === 'profile'" (click)="selectTab('profile')">
+      Profile @if (dirty.profile) { <span class="dot" title="Unsaved changes"></span> }
+    </button>
+    <button role="tab" class="tab" [class.active]="tab === 'courses'" [attr.aria-selected]="tab === 'courses'"
+            [disabled]="!student" [title]="student ? '' : 'Save the student first'" (click)="selectTab('courses')">
+      Courses ({{ student?.courses?.length ?? 0 }}) @if (dirty.courses) { <span class="dot" title="Unsaved changes"></span> }
+    </button>
+  </div>
+
+  @if (loading) {
+    <p class="muted">Loading…</p>
+  } @else if (tab === 'profile') {
+    <app-student-profile-form [student]="student" (saved)="onProfileSaved($event)" (dirtyChange)="dirty.profile = $event" />
+  } @else if (student) {
+    <app-student-courses [student]="student" [allCourses]="(courses.courses$ | async) ?? []"
+                         (saved)="onCoursesSaved($event)" (dirtyChange)="dirty.courses = $event" />
+  }
+</div>

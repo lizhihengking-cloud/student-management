@@ -1,0 +1,4 @@
+.toast-stack { position: fixed; top: 70px; right: 1rem; display: flex; flex-direction: column; gap: 0.5rem; z-index: 200; }
+.toast { display: flex; gap: 1rem; align-items: center; justify-content: space-between; min-width: 260px; max-width: 380px; padding: 0.75rem 1rem; border-radius: 6px; color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+.toast.success { background: #2b8a3e; } .toast.error { background: #c92a2a; } .toast.info { background: #1c7ed6; }
+.toast-close { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }

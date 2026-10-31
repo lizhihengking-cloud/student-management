@@ -1,0 +1,49 @@
+<div class="page-header">
+  <h1>My courses</h1>
+</div>
+
+@if (loading) {
+  <div class="card"><p class="muted">Loading…</p></div>
+} @else if (loadFailed || !student) {
+  <div class="card empty">
+    <p>Could not load your courses.</p>
+    <button class="btn" (click)="reload()">Retry</button>
+  </div>
+} @else {
+  <div class="summary card">
+    <div><strong>{{ student.courses.length }}</strong><span class="muted"> enrolled</span></div>
+    <div><strong>{{ totalCredits }}</strong><span class="muted"> credits</span></div>
+    <div class="chips">
+      @for (c of student.courses; track c.id) { <span class="badge" [title]="c.title">{{ c.code }}</span> }
+      @if (student.courses.length === 0) { <span class="muted">Pick one or more courses below.</span> }
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Course catalogue</h2>
+    @if (catalogue.length === 0) {
+      <p class="empty">No courses are available yet.</p>
+    } @else {
+      <table>
+        <thead><tr><th>Code</th><th>Title</th><th>Credits</th><th class="right">Enrolment</th></tr></thead>
+        <tbody>
+          @for (c of catalogue; track c.id) {
+            <tr [class.enrolled]="isEnrolled(c)">
+              <td><strong>{{ c.code }}</strong></td>
+              <td>{{ c.title }} @if (c.description) { <div class="muted small-text">{{ c.description }}</div> }</td>
+              <td>{{ c.credits }}</td>
+              <td class="right">
+                @if (isEnrolled(c)) {
+                  <span class="status">✓ Enrolled</span>
+                  <button class="btn small danger" [disabled]="busy.has(c.id)" (click)="drop(c)">Drop</button>
+                } @else {
+                  <button class="btn small primary" [disabled]="busy.has(c.id)" (click)="enrol(c)">Enrol</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}
