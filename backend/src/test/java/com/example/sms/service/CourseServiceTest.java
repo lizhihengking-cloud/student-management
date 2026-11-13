@@ -106,6 +106,7 @@ class CourseServiceTest {
     void deleteUnenrollsStudentsFirst() {
         when(courses.findById(1L)).thenReturn(Optional.of(course));
         service.delete(1L);
+        verify(students).removeCourseGrades(1L);
         verify(students).removeCourseEnrollments(1L);
         verify(courses).delete(course);
     }

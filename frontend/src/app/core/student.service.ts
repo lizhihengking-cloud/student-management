@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Student, StudentInput } from './models';
+import { Grade, Student, StudentInput } from './models';
 
 /**
  * Student state store + API client. `students$` is the single source of truth for lists;
@@ -51,6 +51,11 @@ export class StudentService {
 
   unenroll(id: number, courseId: number): Observable<Student> {
     return this.http.delete<Student>(`${this.url}/${id}/courses/${courseId}`).pipe(tap(s => this.upsert(s)));
+  }
+
+  /** Admin only: set an A-D grade for an enrolled course; `null` clears it. */
+  setGrade(id: number, courseId: number, grade: Grade | null): Observable<Student> {
+    return this.http.put<Student>(`${this.url}/${id}/courses/${courseId}/grade`, { grade }).pipe(tap(s => this.upsert(s)));
   }
 
   /** Forget cached data (on logout) so the next user never sees the previous user's students. */

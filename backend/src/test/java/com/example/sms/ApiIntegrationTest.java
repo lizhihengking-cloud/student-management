@@ -229,6 +229,33 @@ class ApiIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    void onlyAdminCanGradeAndGradeIsVisibleToTheStudent() {
+        Client admin = admin();
+        Object course = createCourse(admin, "G" + UUID.randomUUID().toString().substring(0, 5));
+        Object other = createCourse(admin, "H" + UUID.randomUUID().toString().substring(0, 5));
+        Client alice = newUser(email());
+        Object id = alice.get("/api/auth/me").getBody().get("studentId");
+        alice.put("/api/students/" + id + "/courses/" + course, null);
+        String url = "/api/students/" + id + "/courses/" + course + "/grade";
+
+        assertEquals(HttpStatus.FORBIDDEN, alice.put(url, Map.of("grade", "A")).getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, admin.put(url, Map.of("grade", "F")).getStatusCode());
+        assertEquals(HttpStatus.CONFLICT,
+                admin.put("/api/students/" + id + "/courses/" + other + "/grade", Map.of("grade", "A")).getStatusCode());
+
+        assertEquals(HttpStatus.OK, admin.put(url, Map.of("grade", "B")).getStatusCode());
+        List<Map<String, Object>> mine = (List<Map<String, Object>>) alice.get("/api/students/me").getBody().get("courses");
+        assertEquals("B", mine.get(0).get("grade"));
+
+        // dropping the course discards the grade
+        alice.delete("/api/students/" + id + "/courses/" + course);
+        alice.put("/api/students/" + id + "/courses/" + course, null);
+        mine = (List<Map<String, Object>>) alice.get("/api/students/me").getBody().get("courses");
+        assertFalse(mine.get(0).containsKey("grade"));
+    }
+
+    @Test
     void deletingStudentRemovesLoginAndDeletingCourseUnenrols() {
         Client admin = admin();
         Object course = createCourse(admin, "D" + UUID.randomUUID().toString().substring(0, 5));

@@ -65,6 +65,11 @@ export class MyCoursesComponent implements OnInit {
     return this.enrolledIds.has(c.id);
   }
 
+  /** Grade the admin gave for this course, if any. */
+  gradeOf(c: Course) {
+    return this.student?.courses.find(x => x.id === c.id)?.grade ?? null;
+  }
+
   enrol(c: Course) {
     if (!this.student) return;
     this.busy.add(c.id);

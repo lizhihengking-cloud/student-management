@@ -1,5 +1,6 @@
 package com.example.sms.controller;
 
+import com.example.sms.dto.GradeRequest;
 import com.example.sms.dto.StudentRequest;
 import com.example.sms.dto.StudentResponse;
 import com.example.sms.exception.NotFoundException;
@@ -67,6 +68,13 @@ public class StudentController {
     @PreAuthorize("hasRole('ADMIN') or @access.isSelf(#id)")
     public StudentResponse unenroll(@PathVariable Long id, @PathVariable Long courseId) {
         return StudentResponse.from(service.unenroll(id, courseId));
+    }
+
+    /** Admin only: give (or, with a null grade, clear) the A-D grade for one enrolled course. */
+    @PutMapping("/{id}/courses/{courseId}/grade")
+    @PreAuthorize("hasRole('ADMIN')")
+    public StudentResponse grade(@PathVariable Long id, @PathVariable Long courseId, @RequestBody GradeRequest req) {
+        return StudentResponse.from(service.grade(id, courseId, req.getGrade()));
     }
 
     @PutMapping("/{id}/courses")

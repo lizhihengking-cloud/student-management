@@ -1,11 +1,16 @@
+export type Grade = 'A' | 'B' | 'C' | 'D';
+export const GRADES: Grade[] = ['A', 'B', 'C', 'D'];
+
 export interface Course {
   id: number;
   code: string;
   title: string;
   description?: string | null;
   credits: number;
+  /** Set by an admin; only present on a student's enrolled courses once graded. */
+  grade?: Grade | null;
 }
-export type CourseInput = Omit<Course, 'id'>;
+export type CourseInput = Omit<Course, 'id' | 'grade'>;
 
 export interface Student {
   id: number;

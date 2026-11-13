@@ -1,3 +1,6 @@
 .checklist { list-style: none; padding: 0; margin: 0; }
 .checklist li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
 .checklist label { flex-direction: row; align-items: center; gap: 0.6rem; font-weight: 400; font-size: 0.95rem; cursor: pointer; }
+.checklist li.row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.grade-picker { flex-direction: row; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
+.grade-picker select { width: auto; }

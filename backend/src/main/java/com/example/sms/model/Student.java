@@ -2,7 +2,9 @@ package com.example.sms.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -24,6 +26,14 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> courses = new HashSet<>();
 
+    /** Grade per enrolled course, keyed by course id. Only enrolled courses may have an entry. */
+    @ElementCollection
+    @CollectionTable(name = "student_course_grades", joinColumns = @JoinColumn(name = "student_id"))
+    @MapKeyColumn(name = "course_id")
+    @Column(name = "grade", nullable = false, length = 1)
+    @Enumerated(EnumType.STRING)
+    private Map<Long, Grade> grades = new HashMap<>();
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getFirstName() { return firstName; }
@@ -36,4 +46,5 @@ public class Student {
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
     public Set<Course> getCourses() { return courses; }
     public void setCourses(Set<Course> courses) { this.courses = courses; }
+    public Map<Long, Grade> getGrades() { return grades; }
 }

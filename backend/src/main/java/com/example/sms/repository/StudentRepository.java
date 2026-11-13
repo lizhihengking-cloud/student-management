@@ -14,6 +14,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "DELETE FROM student_courses WHERE course_id = :courseId", nativeQuery = true)
     void removeCourseEnrollments(@Param("courseId") Long courseId);
 
+    @Modifying
+    @Query(value = "DELETE FROM student_course_grades WHERE course_id = :courseId", nativeQuery = true)
+    void removeCourseGrades(@Param("courseId") Long courseId);
+
     @Query("select count(s) from Student s join s.courses c where c.id = :courseId")
     long countEnrolled(@Param("courseId") Long courseId);
 }

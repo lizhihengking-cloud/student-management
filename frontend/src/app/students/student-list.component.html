@@ -26,7 +26,7 @@
                 <td><a [routerLink]="['/students', s.id]">{{ s.lastName }}, {{ s.firstName }}</a></td>
                 <td>{{ s.email }}</td>
                 <td>
-                  @for (c of s.courses; track c.id) { <span class="badge" [title]="c.title">{{ c.code }}</span> }
+                  @for (c of s.courses; track c.id) { <span class="badge" [title]="c.title">{{ c.code }}@if (c.grade) { <span class="grade grade-{{ c.grade }}">{{ c.grade }}</span> }</span> }
                   @if (s.courses.length === 0) { <span class="muted">—</span> }
                 </td>
                 <td class="right">

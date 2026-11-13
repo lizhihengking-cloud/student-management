@@ -3,6 +3,7 @@ package com.example.sms.service;
 import com.example.sms.dto.StudentRequest;
 import com.example.sms.exception.ConflictException;
 import com.example.sms.exception.NotFoundException;
+import com.example.sms.model.Grade;
 import com.example.sms.model.Student;
 import com.example.sms.repository.StudentRepository;
 import com.example.sms.repository.UserRepository;
@@ -28,7 +29,7 @@ public class StudentService {
     @Transactional(readOnly = true)
     public List<Student> findAll() {
         List<Student> all = students.findAll(Sort.by("lastName", "firstName"));
-        all.forEach(s -> s.getCourses().size()); // initialise lazy collection inside the transaction
+        all.forEach(s -> { s.getCourses().size(); s.getGrades().size(); }); // initialise lazy collections inside the transaction
         return all;
     }
 
@@ -36,6 +37,7 @@ public class StudentService {
     public Student get(Long id) {
         Student s = students.findById(id).orElseThrow(() -> new NotFoundException("Student " + id + " not found"));
         s.getCourses().size();
+        s.getGrades().size();
         return s;
     }
 
@@ -73,6 +75,17 @@ public class StudentService {
     public Student unenroll(Long studentId, Long courseId) {
         Student s = get(studentId);
         s.getCourses().removeIf(c -> c.getId().equals(courseId));
+        s.getGrades().remove(courseId);
+        return s;
+    }
+
+    /** Admin grades one enrolled course; a {@code null} grade clears it. */
+    public Student grade(Long studentId, Long courseId, Grade grade) {
+        Student s = get(studentId);
+        if (s.getCourses().stream().noneMatch(c -> c.getId().equals(courseId)))
+            throw new ConflictException("Student " + studentId + " is not enrolled in course " + courseId);
+        if (grade == null) s.getGrades().remove(courseId);
+        else s.getGrades().put(courseId, grade);
         return s;
     }
 
@@ -81,6 +94,7 @@ public class StudentService {
         Student s = get(studentId);
         s.getCourses().clear();
         for (Long id : courseIds) s.getCourses().add(courseService.get(id));
+        s.getGrades().keySet().removeIf(id -> !courseIds.contains(id)); // dropped courses lose their grade
         return s;
     }
 

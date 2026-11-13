@@ -49,6 +49,7 @@ public class CourseService {
     /** Deleting a course also removes it from every student's enrollment. */
     public void delete(Long id) {
         Course c = get(id);
+        students.removeCourseGrades(id);
         students.removeCourseEnrollments(id);
         courses.delete(c);
     }

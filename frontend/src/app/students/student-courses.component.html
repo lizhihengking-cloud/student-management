@@ -3,11 +3,23 @@
 } @else {
   <ul class="checklist">
     @for (c of allCourses; track c.id) {
-      <li>
+      <li class="row">
         <label>
           <input type="checkbox" [checked]="selected.has(c.id)" (change)="toggle(c.id)" />
           <strong>{{ c.code }}</strong> — {{ c.title }} <span class="muted">({{ c.credits }} credits)</span>
         </label>
+        @if (canGrade(c.id)) {
+          <label class="grade-picker">
+            Grade
+            <select [value]="gradeOf(c.id)" [disabled]="gradingId === c.id" (change)="setGrade(c.id, $any($event.target).value)"
+                    [attr.aria-label]="'Grade for ' + c.code">
+              <option value="">—</option>
+              @for (g of grades; track g) { <option [value]="g" [selected]="gradeOf(c.id) === g">{{ g }}</option> }
+            </select>
+          </label>
+        } @else if (gradeOf(c.id)) {
+          <span class="grade grade-{{ gradeOf(c.id) }}" title="Grade">{{ gradeOf(c.id) }}</span>
+        }
       </li>
     }
   </ul>

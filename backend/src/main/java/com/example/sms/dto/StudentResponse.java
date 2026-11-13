@@ -25,7 +25,7 @@ public class StudentResponse {
         r.dateOfBirth = s.getDateOfBirth();
         r.courses = s.getCourses().stream()
                 .sorted(Comparator.comparing(Course::getCode))
-                .map(CourseResponse::from)
+                .map(c -> CourseResponse.from(c, s.getGrades().get(c.getId())))
                 .collect(Collectors.toList());
         return r;
     }

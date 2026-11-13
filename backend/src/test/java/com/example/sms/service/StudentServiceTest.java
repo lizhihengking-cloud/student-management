@@ -4,6 +4,7 @@ import com.example.sms.dto.StudentRequest;
 import com.example.sms.exception.ConflictException;
 import com.example.sms.exception.NotFoundException;
 import com.example.sms.model.Course;
+import com.example.sms.model.Grade;
 import com.example.sms.model.Student;
 import com.example.sms.model.User;
 import com.example.sms.repository.StudentRepository;
@@ -159,5 +160,37 @@ class StudentServiceTest {
         when(courseService.get(11L)).thenReturn(c2);
         Student s = service.setCourses(1L, Arrays.asList(11L));
         assertEquals(Collections.singleton(c2), s.getCourses());
+    }
+
+    @Test
+    void gradeSetsAndClearsOnlyForEnrolledCourses() {
+        student.getCourses().add(c1);
+        when(students.findById(1L)).thenReturn(Optional.of(student));
+
+        service.grade(1L, c1.getId(), Grade.B);
+        assertEquals(Grade.B, student.getGrades().get(c1.getId()));
+        service.grade(1L, c1.getId(), null);
+        assertTrue(student.getGrades().isEmpty());
+
+        assertThrows(ConflictException.class, () -> service.grade(1L, 999L, Grade.A));
+    }
+
+    @Test
+    void droppingACourseDropsItsGrade() {
+        student.getCourses().add(c1);
+        student.getCourses().add(c2);
+        student.getGrades().put(c1.getId(), Grade.A);
+        student.getGrades().put(c2.getId(), Grade.C);
+        when(students.findById(1L)).thenReturn(Optional.of(student));
+
+        service.unenroll(1L, c1.getId());
+        assertEquals(Collections.singletonMap(c2.getId(), Grade.C), student.getGrades());
+
+        // replacing the selection keeps grades of retained courses and drops the rest
+        student.getCourses().add(c1);
+        student.getGrades().put(c1.getId(), Grade.A);
+        when(courseService.get(c1.getId())).thenReturn(c1);
+        service.setCourses(1L, Arrays.asList(c1.getId()));
+        assertEquals(Collections.singletonMap(c1.getId(), Grade.A), student.getGrades());
     }
 }
